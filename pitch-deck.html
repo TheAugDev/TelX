@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelX</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-blue: #3b82f6;
+            --primary-dark: #1e40af;
+            --bg-dark: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-light: #f1f5f9;
+            --text-muted: #64748b;
+        }
+
+body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-blue), #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow-box {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .feature-card {
+            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .navigation {
+            position: fixed;
+            top: 50%;
+            right: 2rem;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .nav-link {
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.5);
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-blue);
+            transform: scale(1.2);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            transform: perspective(1000px) rotateX(0deg);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+        }
+
+        .phone-mockup {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 2rem;
+            padding: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section:nth-child(odd) {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .section:nth-child(even) {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Interactive Mini-App Styles */
+        .mini-app-container {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 1.5rem;
+            padding: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 380px;
+            margin: 0 auto;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .mini-app-screen {
+            background: #0f172a;
+            border-radius: 1rem;
+            overflow: hidden;
+            height: 600px;
+            position: relative;
+        }
+
+        .mini-app-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mini-app-nav {
+            background: #1e293b;
+            border-top: 1px solid #374151;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-item.active {
+            color: #3b82f6;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+        }
+
+        .mini-app-content {
+            height: calc(600px - 120px);
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .post {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .post:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .post-time {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .post-content {
+            color: #e2e8f0;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .action-btn:hover {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .action-btn.liked {
+            color: #ef4444;
+        }
+
+        .translate-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white !important;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .translate-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: scale(1.05);
+        }
+
+        .translate-btn.translating {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .discovery-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .discovery-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .discovery-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden">
+    <!-- Section 1: Title -->
+    <section class="section" id="section-1">
+        <div class="text-center max-w-4xl fade-in-up">
+            <div class="mb-8">
+                <div class="inline-block p-4 rounded-full bg-blue-600/20 mb-6" style="animation: pulse-glow 2s ease-in-out infinite;">
+                    <img src="Image_fx (77).jpg" alt="TelX Logo" class="w-20 h-20 rounded-lg object-cover">
+                </div>
+            </div>
+            <h1 class="text-7xl font-bold mb-6">
+                <span class="gradient-text">TelX</span>
+            </h1>
+            <p class="text-2xl text-gray-300 mb-8 leading-relaxed">
+                The Twitter of Telegram<br>
+                <span class="text-blue-400">Decentralized Social Discovery</span>
+            </p>
+            <div class="text-lg text-gray-400">
+                Transform your Telegram channels into discoverable social feeds
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Vision & Mission -->
+    <section class="section" id="section-2">
+        <div class="max-w-6xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">Vision & Mission</span>
+                </h2>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-blue-400 mb-6">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 text-white">Vision</h3>
+                    <p class="text-xl text-gray-300 leading-relaxed">
+                        To create the "Twitter of Telegram," a vibrant and discoverable social layer within the Telegram ecosystem.
+                    </p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-green-400 mb-6">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 text-white">Mission</h3>
+                    <p class="text-xl text-gray-300 leading-relaxed">
+                        To empower Telegram creators by providing them with a platform to gain exposure, build an audience, and monetize their content.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: The Problem -->
+    <section class="section" id="section-3">
+        <div class="max-w-5xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">The Problem</span>
+                </h2>
+                <p class="text-xl text-gray-300">Telegram lacks native content discovery</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-red-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">No Discovery Engine</h3>
+                    <p class="text-gray-400">Telegram has no centralized way to discover new content or creators organically</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-yellow-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Limited Growth</h3>
+                    <p class="text-gray-400">Creators struggle to gain reach beyond their immediate subscriber base</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-orange-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Content Silos</h3>
+                    <p class="text-gray-400">Valuable content is trapped within individual channels with no public square</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Solution -->
+    <section class="section" id="section-4">
+        <div class="max-w-6xl fade-in-up">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-5xl font-bold mb-6">
+                        <span class="gradient-text">The Solution</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        TelX aggregates posts from individual user channels into a unified, scrollable social feed within Telegram.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-blue-600/20">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Channel-as-Profile</h3>
+                                <p class="text-gray-400">Your public channel becomes your profile - all posts automatically appear in the feed</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-green-600/20">
+                                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Discovery Hub</h3>
+                                <p class="text-gray-400">Find new creators and channels easily with categorized browsing</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-purple-600/20">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Connected Interactions</h3>
+                                <p class="text-gray-400">Reactions and comments sync back to original channel posts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="mini-app-container float-animation">
+                        <div class="mini-app-screen">
+                            <!-- Header -->
+                            <div class="mini-app-header">
+                                <h3 class="text-white font-bold">TelX</h3>
+                            </div>
+                            
+                            <!-- Content Area -->
+                            <div class="mini-app-content">
+                                <!-- Feed Screen -->
+                                <div id="feed-screen" class="screen active">
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-blue-500">TC</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">TechChannel</div>
+                                                <div class="post-time">2 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            Just launched our new AI model! 🚀 Amazing results in natural language processing.
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>24</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>12</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-green-500">DH</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">DesignHub</div>
+                                                <div class="post-time">4 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            New UI/UX trends for 2024. What do you think about glassmorphism? 🎨
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>56</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>8</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-purple-500">NW</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">NewsWorld</div>
+                                                <div class="post-time">6 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            Breaking: Major breakthrough in quantum computing announced! 🔬⚛️
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>89</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>23</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Discovery Screen -->
+                                <div id="discovery-screen" class="screen">
+                                    <h4 class="text-white font-semibold mb-4">Discover Channels</h4>
+                                    <div class="discovery-grid">
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-red-500">MC</div>
+                                            <div class="text-white font-semibold">MusicChannel</div>
+                                            <div class="text-gray-400 text-sm">12.5k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-yellow-500">FT</div>
+                                            <div class="text-white font-semibold">FoodTips</div>
+                                            <div class="text-gray-400 text-sm">8.2k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-cyan-500">ST</div>
+                                            <div class="text-white font-semibold">SportsTalk</div>
+                                            <div class="text-gray-400 text-sm">15.7k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-pink-500">BT</div>
+                                            <div class="text-white font-semibold">BookTalk</div>
+                                            <div class="text-gray-400 text-sm">6.9k followers</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Profile Screen -->
+                                <div id="profile-screen" class="screen">
+                                    <div class="text-center mb-6">
+                                        <div class="w-20 h-20 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">YC</div>
+                                        <h4 class="text-white font-bold text-lg">YourChannel</h4>
+                                        <p class="text-gray-400">3.2k followers</p>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-content text-center">
+                                            <p class="text-gray-300 mb-4">Your latest post from your channel appears here automatically!</p>
+                                            <div class="text-blue-400 text-sm">Connected to @yourchannel</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Navigation -->
+                            <div class="mini-app-nav">
+                                <div class="nav-item active" onclick="switchScreen('feed')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                    </svg>
+                                    <span>Feed</span>
+                                </div>
+                                <div class="nav-item" onclick="switchScreen('discovery')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                    <span>Discover</span>
+                                </div>
+                                <div class="nav-item" onclick="switchScreen('profile')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    <span>Profile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: MVP Features -->
+    <section class="section" id="section-5">
+        <div class="max-w-6xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">MVP Core Features</span>
+                </h2>
+                <p class="text-xl text-gray-300">Simple, focused functionality for maximum impact</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-blue-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Unified Feed</h3>
+                    <p class="text-gray-300">A central, algorithm-free, chronological feed showing posts from all participating users</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-green-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Discovery Hub</h3>
+                    <p class="text-gray-300">Dedicated section to discover other users and channels, categorized for easy browsing</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-purple-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">In-App Interactions</h3>
+                    <p class="text-gray-300">React and comment on posts within the Mini App, mirrored back to original channels</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-cyan-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Real-Time Translation</h3>
+                    <p class="text-gray-300">Instant translation of posts into multiple languages, breaking down language barriers globally</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-orange-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Seamless Onboarding</h3>
+                    <p class="text-gray-300">Connect your account and designate a public channel as your feed with a single tap</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Market Opportunity -->
+    <section class="section" id="section-6">
+        <div class="max-w-5xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">Market Opportunity</span>
+                </h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">900M+</div>
+                        <div class="text-gray-300 text-lg">Telegram Users</div>
+                        <div class="text-gray-400 text-sm mt-2">Active monthly users worldwide</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">$150B</div>
+                        <div class="text-gray-300 text-lg">Social Media Market</div>
+                        <div class="text-gray-400 text-sm mt-2">Global market size by 2025</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">0</div>
+                        <div class="text-gray-300 text-lg">Current Solutions</div>
+                        <div class="text-gray-400 text-sm mt-2">No existing discovery layer for Telegram</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                    TelX fills a massive gap in the Telegram ecosystem by creating the first native social discovery layer, 
+                    unlocking the potential for creators and building community within the platform.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Call to Action -->
+    <section class="section" id="section-7">
+        <div class="text-center max-w-4xl fade-in-up">
+            <h2 class="text-6xl font-bold mb-8">
+                <span class="gradient-text">Experience TelX Today</span>
+            </h2>
+            <p class="text-2xl text-gray-300 mb-12 leading-relaxed">
+                Join the social revolution within Telegram.<br>
+                Transform your channel into a discoverable social feed.
+            </p>
+            
+            <div class="mb-8">
+                <div class="inline-block p-8 rounded-3xl glow-box bg-gray-800/30 mb-8">
+                    <img src="Image_fx (77).jpg" alt="TelX Logo" class="w-32 h-32 mx-auto rounded-xl object-cover">
+                </div>
+            </div>
+            
+            <a href="https://t.me/TeleGX_bot" target="_blank" rel="noopener noreferrer" 
+               class="cta-button inline-block px-12 py-6 text-white text-xl font-bold rounded-2xl no-underline mb-8">
+                🚀 Launch TelX Now
+            </a>
+            
+            <div class="text-gray-400 text-lg">
+                <p class="mb-2">Simply click the button above to start using TelX in Telegram</p>
+                <p class="text-base">Connect your channel • Build your audience • Get discovered</p>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-gray-700">
+                <p class="text-gray-500 text-sm">
+                    Built for creators, by creators 🎨<br>
+                    <a href="https://t.me/TeleGX_bot" target="_blank" rel="noopener noreferrer" 
+                       class="gradient-text font-semibold hover:underline transition-all duration-300 cursor-pointer">@TeleGX_bot</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <div class="flex flex-col space-y-3">
+            <a href="#section-1" class="nav-link" title="Title"></a>
+            <a href="#section-2" class="nav-link" title="Vision & Mission"></a>
+            <a href="#section-3" class="nav-link" title="Problem"></a>
+            <a href="#section-4" class="nav-link" title="Solution"></a>
+            <a href="#section-5" class="nav-link" title="MVP Features"></a>
+            <a href="#section-6" class="nav-link" title="Market"></a>
+            <a href="#section-7" class="nav-link" title="Call to Action"></a>
+        </div>
+    </div>
+    
+    <script>
+        // Interactive Mini App Functions
+        function switchScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(`${screenName}-screen`).classList.add('active');
+            
+            // Add active class to selected nav item
+            document.querySelector(`.nav-item[onclick="switchScreen('${screenName}')"]`).classList.add('active');
+        }
+
+        function toggleLike(button) {
+            button.classList.toggle('liked');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            if (button.classList.contains('liked')) {
+                count++;
+                button.style.color = '#ef4444';
+            } else {
+                count--;
+                button.style.color = '#9ca3af';
+            }
+            
+            countSpan.textContent = count;
+            
+            // Add pulse animation
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function translatePost(button) {
+            const post = button.closest('.post');
+            const contentElement = post.querySelector('.post-content');
+            const langSpan = button.querySelector('span');
+            
+            // Simulate translation loading
+            button.classList.add('translating');
+            langSpan.textContent = '...';
+            
+            // Demo translations for each post
+            const translations = {
+                'Just launched our new AI model! 🚀 Amazing results in natural language processing.': {
+                    'ES': '¡Acabamos de lanzar nuestro nuevo modelo de IA! 🚀 Resultados increíbles en procesamiento de lenguaje natural.',
+                    'FR': 'Nous venons de lancer notre nouveau modèle IA ! 🚀 Résultats incroyables en traitement du langage naturel.',
+                    'DE': 'Gerade unser neues KI-Modell gestartet! 🚀 Erstaunliche Ergebnisse in der natürlichen Sprachverarbeitung.',
+                    'original': 'Just launched our new AI model! 🚀 Amazing results in natural language processing.'
+                },
+                'New UI/UX trends for 2024. What do you think about glassmorphism? 🎨': {
+                    'ES': 'Nuevas tendencias UI/UX para 2024. ¿Qué opinas del glassmorphism? 🎨',
+                    'FR': 'Nouvelles tendances UI/UX pour 2024. Que pensez-vous du glassmorphisme ? 🎨',
+                    'DE': 'Neue UI/UX-Trends für 2024. Was denkst du über Glassmorphismus? 🎨',
+                    'original': 'New UI/UX trends for 2024. What do you think about glassmorphism? 🎨'
+                },
+                'Breaking: Major breakthrough in quantum computing announced! 🔬⚛️': {
+                    'ES': 'Última hora: ¡Se anuncia un gran avance en computación cuántica! 🔬⚛️',
+                    'FR': 'Dernière minute : Percée majeure en informatique quantique annoncée ! 🔬⚛️',
+                    'DE': 'Eilmeldung: Großer Durchbruch im Quantencomputing angekündigt! 🔬⚛️',
+                    'original': 'Breaking: Major breakthrough in quantum computing announced! 🔬⚛️'
+                }
+            };
+            
+            const currentContent = contentElement.textContent.trim();
+            const postTranslations = translations[currentContent];
+            
+            if (!postTranslations) return;
+            
+            // Get current language or default to EN
+            let currentLang = langSpan.getAttribute('data-current-lang') || 'EN';
+            
+            // Cycle through languages: EN -> ES -> FR -> DE -> EN
+            const langCycle = ['EN', 'ES', 'FR', 'DE'];
+            const currentIndex = langCycle.indexOf(currentLang);
+            const nextIndex = (currentIndex + 1) % langCycle.length;
+            const nextLang = langCycle[nextIndex];
+            
+            setTimeout(() => {
+                // Update content based on language
+                if (nextLang === 'EN') {
+                    contentElement.textContent = postTranslations.original;
+                } else {
+                    contentElement.textContent = postTranslations[nextLang];
+                }
+                
+                // Update button state
+                button.classList.remove('translating');
+                langSpan.textContent = nextLang;
+                langSpan.setAttribute('data-current-lang', nextLang);
+                
+                // Add translation animation
+                contentElement.style.opacity = '0.7';
+                setTimeout(() => {
+                    contentElement.style.opacity = '1';
+                }, 150);
+            }, 800);
+        }
+
+        // Smooth scrolling and fade-in animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for fade-in animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Smooth scroll for navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Auto-advance mini app demo every 5 seconds
+            let currentScreen = 0;
+            const screens = ['feed', 'discovery', 'profile'];
+            
+            setInterval(() => {
+                currentScreen = (currentScreen + 1) % screens.length;
+                switchScreen(screens[currentScreen]);
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
