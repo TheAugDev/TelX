@@ -2,802 +2,1019 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TelX - Social Network</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TelX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --tg-theme-bg-color: #1f2937;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-hint-color: #9ca3af;
-            --tg-theme-link-color: #3b82f6;
-            --tg-theme-button-color: #3b82f6;
-            --tg-theme-button-text-color: #ffffff;
-            --tg-theme-secondary-bg-color: #374151;
+            --primary-blue: #3b82f6;
+            --primary-dark: #1e40af;
+            --bg-dark: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-light: #f1f5f9;
+            --text-muted: #64748b;
         }
-        
-        body {
-            background-color: var(--tg-theme-bg-color, #1f2937);
-            color: var(--tg-theme-text-color, #ffffff);
+
+body {
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overscroll-behavior: none;
         }
-        
-        .app-screen { display: none; }
-        .app-screen:not(.hidden) { display: block; }
-        .nav-icon.active svg { color: var(--tg-theme-link-color, #3b82f6); }
-        .feed-filter-btn.active { 
-            background: linear-gradient(135deg, var(--tg-theme-button-color, #3b82f6), var(--tg-theme-link-color, #1d4ed8));
-            color: var(--tg-theme-button-text-color, #ffffff);
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
         }
-        .like-btn.liked { color: #ef4444; }
-        .like-btn.liked svg { fill: currentColor; }
-        
-        /* Telegram theme adaptation */
-        .bg-gray-900 { background-color: var(--tg-theme-bg-color, #1f2937) !important; }
-        .bg-gray-800 { background-color: var(--tg-theme-secondary-bg-color, #374151) !important; }
-        .bg-gray-700 { background-color: var(--tg-theme-secondary-bg-color, #374151) !important; }
-        .text-white { color: var(--tg-theme-text-color, #ffffff) !important; }
-        .text-gray-400 { color: var(--tg-theme-hint-color, #9ca3af) !important; }
-        .text-blue-500 { color: var(--tg-theme-link-color, #3b82f6) !important; }
-        .bg-blue-500 { background-color: var(--tg-theme-button-color, #3b82f6) !important; }
-        
-        /* Loading states */
-        .loading { opacity: 0.6; pointer-events: none; }
-        
-        /* Smooth transitions */
-        * { transition: all 0.2s ease; }
-        
-        /* Hide scrollbars */
-        .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-blue), #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glow-box {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .feature-card {
+            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .navigation {
+            position: fixed;
+            top: 50%;
+            right: 2rem;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .nav-link {
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.5);
+            margin: 8px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-blue);
+            transform: scale(1.2);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            transform: perspective(1000px) rotateX(0deg);
+            transition: all 0.3s ease;
+        }
+
+        .cta-button:hover {
+            transform: perspective(1000px) rotateX(-5deg) translateY(-2px);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.6);
+        }
+
+        .phone-mockup {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 2rem;
+            padding: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .section:nth-child(odd) {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .section:nth-child(even) {
+            background: rgba(30, 41, 59, 0.3);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Interactive Mini-App Styles */
+        .mini-app-container {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 1.5rem;
+            padding: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            max-width: 380px;
+            margin: 0 auto;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .mini-app-screen {
+            background: #0f172a;
+            border-radius: 1rem;
+            overflow: hidden;
+            height: 600px;
+            position: relative;
+        }
+
+        .mini-app-header {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mini-app-nav {
+            background: #1e293b;
+            border-top: 1px solid #374151;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .nav-item.active {
+            color: #3b82f6;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+        }
+
+        .mini-app-content {
+            height: calc(600px - 120px);
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .post {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .post:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: white;
+            font-size: 14px;
+        }
+
+        .post-time {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .post-content {
+            color: #e2e8f0;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .action-btn:hover {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .action-btn.liked {
+            color: #ef4444;
+        }
+
+        .translate-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white !important;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .translate-btn:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+            transform: scale(1.05);
+        }
+
+        .translate-btn.translating {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .discovery-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .discovery-card:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .discovery-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
     </style>
 </head>
-<body class="bg-gray-900 min-h-screen">
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50">
-        <div class="text-center">
-            <div class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p class="text-white">Loading TelX...</p>
+<body class="text-white overflow-x-hidden">
+    <!-- Section 1: Title -->
+    <section class="section" id="section-1">
+        <div class="text-center max-w-4xl fade-in-up">
+            <div class="mb-8">
+                <div class="inline-block p-4 rounded-full bg-blue-600/20 mb-6" style="animation: pulse-glow 2s ease-in-out infinite;">
+                    <img src="Image_fx (77).jpg" alt="TelX Logo" class="w-20 h-20 rounded-lg object-cover">
+                </div>
+            </div>
+            <h1 class="text-7xl font-bold mb-6">
+                <span class="gradient-text">TelX</span>
+            </h1>
+            <p class="text-2xl text-gray-300 mb-8 leading-relaxed">
+                The Twitter of Telegram<br>
+                <span class="text-blue-400">Decentralized Social Discovery</span>
+            </p>
+            <div class="text-lg text-gray-400">
+                Transform your Telegram channels into discoverable social feeds
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Main App Container -->
-    <div id="app-container" class="hidden max-w-md mx-auto bg-gray-800 min-h-screen flex flex-col">
-        <!-- Header -->
-        <header id="app-header" class="bg-gray-800 border-b border-gray-600 px-4 py-3 flex items-center justify-between">
-            <button id="back-button" class="hidden p-2 rounded-lg hover:bg-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-            </button>
-            <h1 id="header-title" class="text-xl font-bold text-white">TelX</h1>
-            <button id="create-post-btn" class="p-2 rounded-lg hover:bg-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </button>
-        </header>
+    <!-- Section 2: Vision & Mission -->
+    <section class="section" id="section-2">
+        <div class="max-w-6xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">Vision & Mission</span>
+                </h2>
+            </div>
+            
+            <div class="grid lg:grid-cols-2 gap-12">
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-blue-400 mb-6">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 text-white">Vision</h3>
+                    <p class="text-xl text-gray-300 leading-relaxed">
+                        To create the "Twitter of Telegram," a vibrant and discoverable social layer within the Telegram ecosystem.
+                    </p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-green-400 mb-6">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 text-white">Mission</h3>
+                    <p class="text-xl text-gray-300 leading-relaxed">
+                        To empower Telegram creators by providing them with a platform to gain exposure, build an audience, and monetize their content.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <!-- Content Area -->
-        <main class="flex-1 overflow-hidden">
-            <!-- Feed Screen -->
-            <div id="feed-screen" class="app-screen h-full flex flex-col">
-                <!-- Filter Buttons -->
-                <div class="p-4 bg-gray-800 border-b border-gray-600">
-                    <div class="flex justify-between space-x-2">
-                        <button class="feed-filter-btn flex-1 bg-gray-700/90 text-gray-300 px-3 py-2 rounded-lg text-sm font-medium border border-gray-600/50 hover:bg-gray-600 transition-all" data-filter="latest">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                        </button>
-                        <button class="feed-filter-btn flex-1 bg-gray-700/90 text-gray-300 px-3 py-2 rounded-lg text-sm font-medium border border-gray-600/50 hover:bg-gray-600 transition-all" data-filter="fyp">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
-                            </svg>
-                        </button>
-                        <button class="feed-filter-btn flex-1 bg-gray-700/90 text-gray-300 px-3 py-2 rounded-lg text-sm font-medium border border-gray-600/50 hover:bg-gray-600 transition-all" data-filter="trending">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                            </svg>
-                        </button>
-                        <button class="feed-filter-btn flex-1 bg-gray-700/90 text-gray-300 px-3 py-2 rounded-lg text-sm font-medium border border-gray-600/50 hover:bg-gray-600 transition-all" data-filter="following">
-                            <svg class="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                        </button>
+    <!-- Section 3: The Problem -->
+    <section class="section" id="section-3">
+        <div class="max-w-5xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">The Problem</span>
+                </h2>
+                <p class="text-xl text-gray-300">Telegram lacks native content discovery</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-red-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">No Discovery Engine</h3>
+                    <p class="text-gray-400">Telegram has no centralized way to discover new content or creators organically</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-yellow-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Limited Growth</h3>
+                    <p class="text-gray-400">Creators struggle to gain reach beyond their immediate subscriber base</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-6 text-center">
+                    <div class="text-orange-400 mb-4">
+                        <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3 text-white">Content Silos</h3>
+                    <p class="text-gray-400">Valuable content is trapped within individual channels with no public square</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: The Solution -->
+    <section class="section" id="section-4">
+        <div class="max-w-6xl fade-in-up">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-5xl font-bold mb-6">
+                        <span class="gradient-text">The Solution</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                        TelX aggregates posts from individual user channels into a unified, scrollable social feed within Telegram.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-blue-600/20">
+                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Channel-as-Profile</h3>
+                                <p class="text-gray-400">Your public channel becomes your profile - all posts automatically appear in the feed</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-green-600/20">
+                                <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Discovery Hub</h3>
+                                <p class="text-gray-400">Find new creators and channels easily with categorized browsing</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="p-2 rounded-lg bg-purple-600/20">
+                                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-white mb-2">Connected Interactions</h3>
+                                <p class="text-gray-400">Reactions and comments sync back to original channel posts</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Posts Container -->
-                <div id="posts-container" class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar">
-                    <!-- Posts will be rendered here -->
-                </div>
-            </div>
-
-            <!-- Discover Screen -->
-            <div id="discover-screen" class="app-screen h-full flex flex-col hidden">
-                <div class="flex-1 overflow-y-auto hide-scrollbar">
-                    <!-- Search Bar -->
-                    <div class="p-4 bg-gray-800 border-b border-gray-600">
-                        <input type="text" placeholder="Search users..." 
-                               class="w-full bg-gray-700 text-white placeholder-gray-400 px-4 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none">
-                    </div>
-                    
-                    <!-- Suggested Users -->
-                    <div class="p-4">
-                        <h2 class="text-lg font-bold text-white mb-4">Discover People</h2>
-                        <div id="discover-users-list" class="space-y-3">
-                            <!-- Users will be rendered here -->
+                <div class="text-center">
+                    <div class="mini-app-container float-animation">
+                        <div class="mini-app-screen">
+                            <!-- Header -->
+                            <div class="mini-app-header">
+                                <h3 class="text-white font-bold">TelX</h3>
+                            </div>
+                            
+                            <!-- Content Area -->
+                            <div class="mini-app-content">
+                                <!-- Feed Screen -->
+                                <div id="feed-screen" class="screen active">
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-blue-500">TC</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">TechChannel</div>
+                                                <div class="post-time">2 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            Just launched our new AI model! 🚀 Amazing results in natural language processing.
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>24</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>12</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-green-500">DH</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">DesignHub</div>
+                                                <div class="post-time">4 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            New UI/UX trends for 2024. What do you think about glassmorphism? 🎨
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>56</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>8</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-header">
+                                            <div class="post-avatar bg-purple-500">NW</div>
+                                            <div class="post-meta">
+                                                <div class="post-author">NewsWorld</div>
+                                                <div class="post-time">6 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-content">
+                                            Breaking: Major breakthrough in quantum computing announced! 🔬⚛️
+                                        </div>
+                                        <div class="post-actions">
+                                            <div class="action-group">
+                                                <div class="action-btn" onclick="toggleLike(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                                    </svg>
+                                                    <span>89</span>
+                                                </div>
+                                                <div class="action-btn">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                    </svg>
+                                                    <span>23</span>
+                                                </div>
+                                                <div class="action-btn translate-btn" onclick="translatePost(this)">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                                                    </svg>
+                                                    <span>EN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Discovery Screen -->
+                                <div id="discovery-screen" class="screen">
+                                    <h4 class="text-white font-semibold mb-4">Discover Channels</h4>
+                                    <div class="discovery-grid">
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-red-500">MC</div>
+                                            <div class="text-white font-semibold">MusicChannel</div>
+                                            <div class="text-gray-400 text-sm">12.5k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-yellow-500">FT</div>
+                                            <div class="text-white font-semibold">FoodTips</div>
+                                            <div class="text-gray-400 text-sm">8.2k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-cyan-500">ST</div>
+                                            <div class="text-white font-semibold">SportsTalk</div>
+                                            <div class="text-gray-400 text-sm">15.7k followers</div>
+                                        </div>
+                                        <div class="discovery-card">
+                                            <div class="discovery-avatar bg-pink-500">BT</div>
+                                            <div class="text-white font-semibold">BookTalk</div>
+                                            <div class="text-gray-400 text-sm">6.9k followers</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Profile Screen -->
+                                <div id="profile-screen" class="screen">
+                                    <div class="text-center mb-6">
+                                        <div class="w-20 h-20 bg-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">YC</div>
+                                        <h4 class="text-white font-bold text-lg">YourChannel</h4>
+                                        <p class="text-gray-400">3.2k followers</p>
+                                    </div>
+                                    
+                                    <div class="post">
+                                        <div class="post-content text-center">
+                                            <p class="text-gray-300 mb-4">Your latest post from your channel appears here automatically!</p>
+                                            <div class="text-blue-400 text-sm">Connected to @yourchannel</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Navigation -->
+                            <div class="mini-app-nav">
+                                <div class="nav-item active" onclick="switchScreen('feed')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                    </svg>
+                                    <span>Feed</span>
+                                </div>
+                                <div class="nav-item" onclick="switchScreen('discovery')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                    </svg>
+                                    <span>Discover</span>
+                                </div>
+                                <div class="nav-item" onclick="switchScreen('profile')">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    <span>Profile</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Profile Screen -->
-            <div id="profile-screen" class="app-screen h-full hidden">
-                <div class="flex-1 overflow-y-auto hide-scrollbar">
-                    <!-- Profile content will be rendered here -->
-                </div>
-            </div>
-        </main>
-
-        <!-- Bottom Navigation -->
-        <nav class="bg-gray-800 border-t border-gray-600 px-4 py-2">
-            <div class="flex justify-around">
-                <button class="nav-icon p-3 rounded-lg hover:bg-gray-700" data-screen="feed-screen">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2V7z" />
-                    </svg>
-                </button>
-                <button class="nav-icon p-3 rounded-lg hover:bg-gray-700" data-screen="discover-screen">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </button>
-                <button class="nav-icon p-3 rounded-lg hover:bg-gray-700" data-screen="profile-screen" data-user-id="current">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                </button>
-            </div>
-        </nav>
-    </div>
-
-    <!-- Create Post Modal -->
-    <div id="create-post-screen" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-        <div class="bg-gray-800 w-full rounded-t-2xl p-6 max-h-96">
-            <div class="flex items-center justify-between mb-4">
-                <button id="cancel-post-btn" class="text-gray-400 hover:text-white">Cancel</button>
-                <h3 class="text-lg font-bold text-white">New Post</h3>
-                <button id="submit-post-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg disabled:opacity-50" disabled>Post</button>
-            </div>
-            <textarea id="post-textarea" class="w-full bg-gray-700 text-white placeholder-gray-400 p-3 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none resize-none" 
-                      placeholder="What's happening?" rows="4" maxlength="280"></textarea>
-            <div class="flex justify-between items-center mt-3">
-                <span id="char-counter" class="text-sm text-gray-400">0/280</span>
-            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Comments Modal -->
-    <div id="comments-screen" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-        <div class="bg-gray-800 w-full h-96 rounded-t-2xl flex flex-col">
-            <div class="flex items-center justify-between p-4 border-b border-gray-600">
-                <h3 class="text-lg font-bold text-white">Comments</h3>
-                <button id="close-comments-btn" class="text-gray-400 hover:text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
+    <!-- Section 5: MVP Features -->
+    <section class="section" id="section-5">
+        <div class="max-w-6xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">MVP Core Features</span>
+                </h2>
+                <p class="text-xl text-gray-300">Simple, focused functionality for maximum impact</p>
             </div>
-            <div id="comments-content" class="flex-1 overflow-y-auto p-4 hide-scrollbar">
-                <!-- Comments will be rendered here -->
-            </div>
-            <div class="p-4 border-t border-gray-600">
-                <div class="flex space-x-3">
-                    <input id="comment-input" type="text" placeholder="Add a comment..." 
-                           class="flex-1 bg-gray-700 text-white placeholder-gray-400 px-3 py-2 rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none">
-                    <button id="submit-comment-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Send</button>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-blue-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Unified Feed</h3>
+                    <p class="text-gray-300">A central, algorithm-free, chronological feed showing posts from all participating users</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-green-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Discovery Hub</h3>
+                    <p class="text-gray-300">Dedicated section to discover other users and channels, categorized for easy browsing</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-purple-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">In-App Interactions</h3>
+                    <p class="text-gray-300">React and comment on posts within the Mini App, mirrored back to original channels</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-cyan-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Real-Time Translation</h3>
+                    <p class="text-gray-300">Instant translation of posts into multiple languages, breaking down language barriers globally</p>
+                </div>
+                
+                <div class="feature-card rounded-2xl p-8">
+                    <div class="text-orange-400 mb-4">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-4 text-white">Seamless Onboarding</h3>
+                    <p class="text-gray-300">Connect your account and designate a public channel as your feed with a single tap</p>
                 </div>
             </div>
         </div>
+    </section>
+
+    <!-- Section 6: Market Opportunity -->
+    <section class="section" id="section-6">
+        <div class="max-w-5xl fade-in-up">
+            <div class="text-center mb-12">
+                <h2 class="text-5xl font-bold mb-6">
+                    <span class="gradient-text">Market Opportunity</span>
+                </h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">900M+</div>
+                        <div class="text-gray-300 text-lg">Telegram Users</div>
+                        <div class="text-gray-400 text-sm mt-2">Active monthly users worldwide</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">$150B</div>
+                        <div class="text-gray-300 text-lg">Social Media Market</div>
+                        <div class="text-gray-400 text-sm mt-2">Global market size by 2025</div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <div class="glow-box bg-gray-800/50 rounded-2xl p-8 mb-4">
+                        <div class="text-4xl font-bold gradient-text mb-2">0</div>
+                        <div class="text-gray-300 text-lg">Current Solutions</div>
+                        <div class="text-gray-400 text-sm mt-2">No existing discovery layer for Telegram</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <p class="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+                    TelX fills a massive gap in the Telegram ecosystem by creating the first native social discovery layer, 
+                    unlocking the potential for creators and building community within the platform.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Call to Action -->
+    <section class="section" id="section-7">
+        <div class="text-center max-w-4xl fade-in-up">
+            <h2 class="text-6xl font-bold mb-8">
+                <span class="gradient-text">Experience TelX Today</span>
+            </h2>
+            <p class="text-2xl text-gray-300 mb-12 leading-relaxed">
+                Join the social revolution within Telegram.<br>
+                Transform your channel into a discoverable social feed.
+            </p>
+            
+            <div class="mb-8">
+                <div class="inline-block p-8 rounded-3xl glow-box bg-gray-800/30 mb-8">
+                    <img src="Image_fx (77).jpg" alt="TelX Logo" class="w-32 h-32 mx-auto rounded-xl object-cover">
+                </div>
+            </div>
+            
+            <a href="https://t.me/TeleGX_bot" target="_blank" rel="noopener noreferrer" 
+               class="cta-button inline-block px-12 py-6 text-white text-xl font-bold rounded-2xl no-underline mb-8">
+                🚀 Launch TelX Now
+            </a>
+            
+            <div class="text-gray-400 text-lg">
+                <p class="mb-2">Simply click the button above to start using TelX in Telegram</p>
+                <p class="text-base">Connect your channel • Build your audience • Get discovered</p>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-gray-700">
+                <p class="text-gray-500 text-sm">
+                    Built for creators, by creators 🎨<br>
+                    <a href="https://t.me/TeleGX_bot" target="_blank" rel="noopener noreferrer" 
+                       class="gradient-text font-semibold hover:underline transition-all duration-300 cursor-pointer">@TeleGX_bot</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <div class="flex flex-col space-y-3">
+            <a href="#section-1" class="nav-link" title="Title"></a>
+            <a href="#section-2" class="nav-link" title="Vision & Mission"></a>
+            <a href="#section-3" class="nav-link" title="Problem"></a>
+            <a href="#section-4" class="nav-link" title="Solution"></a>
+            <a href="#section-5" class="nav-link" title="MVP Features"></a>
+            <a href="#section-6" class="nav-link" title="Market"></a>
+            <a href="#section-7" class="nav-link" title="Call to Action"></a>
+        </div>
     </div>
-
-    <script type="module">
-        // Import Telegram WebApp SDK
-        const tg = window.Telegram.WebApp;
-        
-        // Configure axios for API calls
-        const API_BASE_URL = window.location.origin + '/api';
-        
-        // Global state
-        const state = {
-            currentUser: null,
-            currentScreen: 'feed-screen',
-            feedFilter: 'latest',
-            posts: [],
-            users: [],
-            loading: false
-        };
-
-        // Telegram WebApp initialization
-        function initTelegramWebApp() {
-            tg.ready();
-            tg.expand();
+    
+    <script>
+        // Interactive Mini App Functions
+        function switchScreen(screenName) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
             
-            // Apply Telegram theme
-            if (tg.colorScheme) {
-                document.documentElement.style.setProperty('--tg-theme-bg-color', tg.backgroundColor);
-                document.documentElement.style.setProperty('--tg-theme-text-color', tg.textColor);
-                document.documentElement.style.setProperty('--tg-theme-hint-color', tg.hintColor);
-                document.documentElement.style.setProperty('--tg-theme-link-color', tg.linkColor);
-                document.documentElement.style.setProperty('--tg-theme-button-color', tg.buttonColor);
-                document.documentElement.style.setProperty('--tg-theme-button-text-color', tg.buttonTextColor);
-                document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', tg.secondaryBackgroundColor);
-            }
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
             
-            // Authentication
-            authenticateUser();
+            // Show selected screen
+            document.getElementById(`${screenName}-screen`).classList.add('active');
+            
+            // Add active class to selected nav item
+            document.querySelector(`.nav-item[onclick="switchScreen('${screenName}')"]`).classList.add('active');
         }
 
-        // API helper functions
-        async function apiCall(endpoint, options = {}) {
-            const config = {
-                baseURL: API_BASE_URL,
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(state.currentUser && { 'X-User-ID': state.currentUser.id })
+        function toggleLike(button) {
+            button.classList.toggle('liked');
+            const countSpan = button.querySelector('span');
+            let count = parseInt(countSpan.textContent);
+            
+            if (button.classList.contains('liked')) {
+                count++;
+                button.style.color = '#ef4444';
+            } else {
+                count--;
+                button.style.color = '#9ca3af';
+            }
+            
+            countSpan.textContent = count;
+            
+            // Add pulse animation
+            button.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function translatePost(button) {
+            const post = button.closest('.post');
+            const contentElement = post.querySelector('.post-content');
+            const langSpan = button.querySelector('span');
+            
+            // Simulate translation loading
+            button.classList.add('translating');
+            langSpan.textContent = '...';
+            
+            // Demo translations for each post
+            const translations = {
+                'Just launched our new AI model! 🚀 Amazing results in natural language processing.': {
+                    'ES': '¡Acabamos de lanzar nuestro nuevo modelo de IA! 🚀 Resultados increíbles en procesamiento de lenguaje natural.',
+                    'FR': 'Nous venons de lancer notre nouveau modèle IA ! 🚀 Résultats incroyables en traitement du langage naturel.',
+                    'DE': 'Gerade unser neues KI-Modell gestartet! 🚀 Erstaunliche Ergebnisse in der natürlichen Sprachverarbeitung.',
+                    'original': 'Just launched our new AI model! 🚀 Amazing results in natural language processing.'
                 },
-                ...options
+                'New UI/UX trends for 2024. What do you think about glassmorphism? 🎨': {
+                    'ES': 'Nuevas tendencias UI/UX para 2024. ¿Qué opinas del glassmorphism? 🎨',
+                    'FR': 'Nouvelles tendances UI/UX pour 2024. Que pensez-vous du glassmorphisme ? 🎨',
+                    'DE': 'Neue UI/UX-Trends für 2024. Was denkst du über Glassmorphismus? 🎨',
+                    'original': 'New UI/UX trends for 2024. What do you think about glassmorphism? 🎨'
+                },
+                'Breaking: Major breakthrough in quantum computing announced! 🔬⚛️': {
+                    'ES': 'Última hora: ¡Se anuncia un gran avance en computación cuántica! 🔬⚛️',
+                    'FR': 'Dernière minute : Percée majeure en informatique quantique annoncée ! 🔬⚛️',
+                    'DE': 'Eilmeldung: Großer Durchbruch im Quantencomputing angekündigt! 🔬⚛️',
+                    'original': 'Breaking: Major breakthrough in quantum computing announced! 🔬⚛️'
+                }
             };
             
-            try {
-                const response = await axios(endpoint, config);
-                return response.data;
-            } catch (error) {
-                console.error('API Error:', error);
-                throw error;
-            }
-        }
-
-        // Authentication
-        async function authenticateUser() {
-            try {
-                const initData = tg.initData || 'query_id=test&user=%7B%22id%22%3A123456789%2C%22first_name%22%3A%22Test%22%2C%22username%22%3A%22testuser%22%7D&auth_date=1234567890&hash=test';
-                
-                const response = await apiCall('/auth', {
-                    method: 'POST',
-                    data: { initData }
-                });
-                
-                state.currentUser = response.user;
-                showApp();
-                await loadFeed();
-                await loadUsers();
-            } catch (error) {
-                console.error('Authentication failed:', error);
-                showError('Authentication failed. Please try again.');
-            }
-        }
-
-        // UI functions
-        function showApp() {
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('app-container').classList.remove('hidden');
-        }
-
-        function showError(message) {
-            // Simple error display - in production you'd want a better UI
-            alert(message);
-        }
-
-        function showScreen(screenId) {
-            // Hide all screens
-            document.querySelectorAll('.app-screen').forEach(screen => {
-                screen.classList.add('hidden');
-            });
+            const currentContent = contentElement.textContent.trim();
+            const postTranslations = translations[currentContent];
             
-            // Show target screen
-            document.getElementById(screenId).classList.remove('hidden');
-            state.currentScreen = screenId;
+            if (!postTranslations) return;
             
-            // Update header
-            updateHeader(screenId);
+            // Get current language or default to EN
+            let currentLang = langSpan.getAttribute('data-current-lang') || 'EN';
             
-            // Update navigation
-            updateNavigation(screenId);
-        }
-
-        function updateHeader(screenId) {
-            const backButton = document.getElementById('back-button');
-            const headerTitle = document.getElementById('header-title');
-            const createPostBtn = document.getElementById('create-post-btn');
+            // Cycle through languages: EN -> ES -> FR -> DE -> EN
+            const langCycle = ['EN', 'ES', 'FR', 'DE'];
+            const currentIndex = langCycle.indexOf(currentLang);
+            const nextIndex = (currentIndex + 1) % langCycle.length;
+            const nextLang = langCycle[nextIndex];
             
-            if (screenId === 'profile-screen') {
-                backButton.classList.remove('hidden');
-                createPostBtn.classList.add('hidden');
-                headerTitle.textContent = "Profile";
-            } else {
-                backButton.classList.add('hidden');
-                createPostBtn.classList.remove('hidden');
-                headerTitle.textContent = "TelX";
-            }
-        }
-
-        function updateNavigation(screenId) {
-            document.querySelectorAll('.nav-icon').forEach(icon => {
-                const iconSvg = icon.querySelector('svg');
-                if (icon.dataset.screen === screenId) {
-                    icon.classList.add('active');
-                    iconSvg.classList.remove('text-gray-400');
-                    iconSvg.classList.add('text-blue-500');
+            setTimeout(() => {
+                // Update content based on language
+                if (nextLang === 'EN') {
+                    contentElement.textContent = postTranslations.original;
                 } else {
-                    icon.classList.remove('active');
-                    iconSvg.classList.add('text-gray-400');
-                    iconSvg.classList.remove('text-blue-500');
+                    contentElement.textContent = postTranslations[nextLang];
                 }
-            });
-        }
-
-        // Data loading functions
-        async function loadFeed() {
-            try {
-                state.loading = true;
-                const response = await apiCall(`/posts?filter=${state.feedFilter}`);
-                state.posts = response.posts;
-                renderPosts();
-            } catch (error) {
-                console.error('Failed to load feed:', error);
-                showError('Failed to load posts. Please try again.');
-            } finally {
-                state.loading = false;
-            }
-        }
-
-        async function loadUsers() {
-            try {
-                const response = await apiCall('/users');
-                state.users = response.users;
-                renderUsers();
-            } catch (error) {
-                console.error('Failed to load users:', error);
-            }
-        }
-
-        async function loadUserProfile(userId) {
-            try {
-                const response = await apiCall(`/users/${userId}`);
-                renderProfile(response.user, response.posts);
-            } catch (error) {
-                console.error('Failed to load user profile:', error);
-                showError('Failed to load profile. Please try again.');
-            }
-        }
-
-        // Rendering functions
-        function renderPosts() {
-            const container = document.getElementById('posts-container');
-            
-            if (state.posts.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="text-6xl mb-4">📱</div>
-                        <p class="text-gray-400 text-lg mb-2">No posts yet</p>
-                        <p class="text-gray-500 text-sm">Be the first to share something!</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = state.posts.map(post => `
-                <div class="bg-gray-700 rounded-lg p-4">
-                    <div class="flex items-center mb-3 cursor-pointer" onclick="navigateToProfile(${post.author.id})">
-                        <img src="${post.author.photo_url || generateAvatar(post.author.first_name)}" 
-                             class="w-10 h-10 rounded-full mr-3" 
-                             onerror="this.src='${generateAvatar(post.author.first_name)}'">
-                        <div>
-                            <p class="font-semibold text-white">${post.author.full_name}</p>
-                            <p class="text-xs text-gray-400">${post.author.handle} • ${timeSince(post.created_at)}</p>
-                        </div>
-                    </div>
-                    <p class="text-white mb-3 leading-relaxed">${post.content}</p>
-                    ${post.image_url ? `<img src="${post.image_url}" class="rounded-lg w-full h-auto mb-3" alt="Post image">` : ''}
-                    <div class="flex justify-between items-center text-gray-400 border-t border-gray-600 pt-3">
-                        <div class="flex items-center space-x-6">
-                            <button class="like-btn flex items-center space-x-1 hover:text-red-500 transition-colors ${post.is_liked ? 'liked text-red-500' : ''}" 
-                                    onclick="toggleLike(${post.id})">
-                                <svg class="w-5 h-5" fill="${post.is_liked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                </svg>
-                                <span id="likes-${post.id}">${formatNumber(post.likes_count)}</span>
-                            </button>
-                            <button class="comment-btn flex items-center space-x-1 hover:text-blue-500 transition-colors" 
-                                    onclick="showComments(${post.id})">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                <span>${formatNumber(post.comments_count)}</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderUsers() {
-            const container = document.getElementById('discover-users-list');
-            
-            container.innerHTML = state.users.map(user => `
-                <div class="bg-gray-700 rounded-lg p-4">
-                    <div class="flex items-center space-x-4">
-                        <img src="${user.photo_url || generateAvatar(user.first_name)}" 
-                             class="w-12 h-12 rounded-full cursor-pointer" 
-                             onclick="navigateToProfile(${user.id})"
-                             onerror="this.src='${generateAvatar(user.first_name)}'">
-                        <div class="flex-1 min-w-0">
-                            <h3 class="font-semibold text-white truncate">${user.full_name}</h3>
-                            <p class="text-sm text-gray-400">${user.handle}</p>
-                            ${user.bio ? `<p class="text-sm text-gray-300 mt-1">${user.bio}</p>` : ''}
-                            <div class="flex space-x-4 text-xs text-gray-400 mt-2">
-                                <span>${formatNumber(user.followers_count)} followers</span>
-                                <span>${formatNumber(user.posts_count)} posts</span>
-                            </div>
-                        </div>
-                        <button onclick="toggleFollow(${user.id})" 
-                                class="follow-btn px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${user.is_following ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-blue-500 text-white hover:bg-blue-600'}">
-                            ${user.is_following ? 'Following' : 'Follow'}
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderProfile(user, posts) {
-            const container = document.getElementById('profile-screen');
-            
-            container.innerHTML = `
-                <div class="p-6 bg-gray-700/50">
-                    <div class="text-center">
-                        <img src="${user.photo_url || generateAvatar(user.first_name)}" 
-                             class="w-20 h-20 rounded-full mx-auto mb-4 border-4 border-gray-600"
-                             onerror="this.src='${generateAvatar(user.first_name)}'">
-                        <h2 class="text-2xl font-bold text-white">${user.full_name}</h2>
-                        <p class="text-sm text-gray-400 mb-3">${user.handle}</p>
-                        ${user.bio ? `<p class="text-gray-300 max-w-xs mx-auto mb-4 leading-relaxed">${user.bio}</p>` : ''}
-                        <div class="flex justify-center space-x-8 mb-6">
-                            <div class="text-center">
-                                <div class="font-bold text-white text-lg">${formatNumber(user.following_count)}</div>
-                                <div class="text-gray-400 text-sm">Following</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="font-bold text-white text-lg">${formatNumber(user.followers_count)}</div>
-                                <div class="text-gray-400 text-sm">Followers</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="font-bold text-white text-lg">${posts.length}</div>
-                                <div class="text-gray-400 text-sm">Posts</div>
-                            </div>
-                        </div>
-                        ${user.id !== state.currentUser.id ? `
-                            <button onclick="toggleFollow(${user.id})" 
-                                    class="w-full font-bold py-3 px-4 rounded-lg transition-colors ${user.is_following ? 'bg-gray-600 text-white hover:bg-gray-500' : 'bg-blue-500 text-white hover:bg-blue-600'}">
-                                ${user.is_following ? 'Following' : 'Follow'}
-                            </button>
-                        ` : `
-                            <button class="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-gray-500 transition-colors">
-                                Edit Profile
-                            </button>
-                        `}
-                    </div>
-                </div>
                 
-                <div class="border-t border-gray-600">
-                    <div class="p-4 bg-gray-700/30">
-                        <h3 class="font-bold text-white text-lg mb-3">Posts</h3>
-                    </div>
-                    <div class="p-2 space-y-3">
-                        ${posts.length > 0 ? posts.map(post => `
-                            <div class="bg-gray-700 rounded-lg p-4">
-                                <p class="text-white mb-3 leading-relaxed">${post.content}</p>
-                                ${post.image_url ? `<img src="${post.image_url}" class="rounded-lg w-full h-auto mb-3" alt="Post image">` : ''}
-                                <div class="flex justify-between items-center text-gray-400 border-t border-gray-600 pt-3">
-                                    <div class="flex items-center space-x-6">
-                                        <span class="flex items-center space-x-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                            </svg>
-                                            <span>${formatNumber(post.likes_count)}</span>
-                                        </span>
-                                        <span class="flex items-center space-x-1">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                            </svg>
-                                            <span>${formatNumber(post.comments_count)}</span>
-                                        </span>
-                                    </div>
-                                    <span class="text-sm">${timeSince(post.created_at)}</span>
-                                </div>
-                            </div>
-                        `).join('') : `
-                            <div class="text-center py-12">
-                                <div class="text-6xl mb-4">📝</div>
-                                <p class="text-gray-400 text-lg mb-2">${user.id === state.currentUser.id ? "You haven't posted anything yet" : `${user.first_name} hasn't posted anything yet`}</p>
-                                <p class="text-gray-500 text-sm">${user.id === state.currentUser.id ? "Share your first thought with the community!" : "Check back later for updates"}</p>
-                            </div>
-                        `}
-                    </div>
-                </div>
-            `;
+                // Update button state
+                button.classList.remove('translating');
+                langSpan.textContent = nextLang;
+                langSpan.setAttribute('data-current-lang', nextLang);
+                
+                // Add translation animation
+                contentElement.style.opacity = '0.7';
+                setTimeout(() => {
+                    contentElement.style.opacity = '1';
+                }, 150);
+            }, 800);
         }
 
-        // Action functions
-        async function toggleLike(postId) {
-            try {
-                const response = await apiCall(`/posts/${postId}/like`, { method: 'POST' });
-                
-                // Update post in state
-                const post = state.posts.find(p => p.id === postId);
-                if (post) {
-                    post.is_liked = response.is_liked;
-                    post.likes_count = response.likes_count;
-                    
-                    // Update UI
-                    const likesElement = document.getElementById(`likes-${postId}`);
-                    if (likesElement) {
-                        likesElement.textContent = formatNumber(response.likes_count);
+        // Smooth scrolling and fade-in animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Intersection Observer for fade-in animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
                     }
-                }
-            } catch (error) {
-                console.error('Failed to toggle like:', error);
-            }
-        }
-
-        async function toggleFollow(userId) {
-            try {
-                const response = await apiCall(`/users/${userId}/follow`, { method: 'POST' });
-                
-                // Update user in state
-                const user = state.users.find(u => u.id === userId);
-                if (user) {
-                    user.is_following = response.action === 'followed';
-                    user.followers_count = response.user.followers_count;
-                }
-                
-                // Re-render affected components
-                if (state.currentScreen === 'discover-screen') {
-                    renderUsers();
-                } else if (state.currentScreen === 'profile-screen') {
-                    await loadUserProfile(userId);
-                }
-            } catch (error) {
-                console.error('Failed to toggle follow:', error);
-            }
-        }
-
-        async function createPost(content) {
-            try {
-                const response = await apiCall('/posts', {
-                    method: 'POST',
-                    data: { content }
                 });
-                
-                // Add to state
-                state.posts.unshift(response.post);
-                
-                // Re-render if on feed
-                if (state.currentScreen === 'feed-screen') {
-                    renderPosts();
-                }
-                
-                return response.post;
-            } catch (error) {
-                console.error('Failed to create post:', error);
-                throw error;
-            }
-        }
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
 
-        async function showComments(postId) {
-            try {
-                const response = await apiCall(`/posts/${postId}/comments`);
-                renderComments(response.post, response.comments);
-                document.getElementById('comments-screen').classList.remove('hidden');
-            } catch (error) {
-                console.error('Failed to load comments:', error);
-            }
-        }
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
 
-        function renderComments(post, comments) {
-            const container = document.getElementById('comments-content');
-            
-            container.innerHTML = `
-                <!-- Original Post -->
-                <div class="bg-gray-700 rounded-lg p-4 mb-4">
-                    <div class="flex items-center mb-3">
-                        <img src="${post.author.photo_url || generateAvatar(post.author.first_name)}" 
-                             class="w-10 h-10 rounded-full mr-3"
-                             onerror="this.src='${generateAvatar(post.author.first_name)}'">
-                        <div>
-                            <p class="font-semibold text-white">${post.author.full_name}</p>
-                            <p class="text-xs text-gray-400">${post.author.handle} • ${timeSince(post.created_at)}</p>
-                        </div>
-                    </div>
-                    <p class="text-white mb-3 leading-relaxed">${post.content}</p>
-                    ${post.image_url ? `<img src="${post.image_url}" class="rounded-lg w-full h-auto mb-3" alt="Post image">` : ''}
-                </div>
-                
-                <!-- Comments -->
-                <div class="space-y-3">
-                    <h3 class="text-white font-semibold text-lg mb-3">${comments.length > 0 ? 'Comments' : 'No comments yet'}</h3>
-                    ${comments.map(comment => `
-                        <div class="bg-gray-700/50 rounded-lg p-3">
-                            <div class="flex items-start space-x-3">
-                                <img src="${comment.author.photo_url || generateAvatar(comment.author.first_name)}" 
-                                     class="w-8 h-8 rounded-full cursor-pointer" 
-                                     onclick="navigateToProfile(${comment.author.id})"
-                                     onerror="this.src='${generateAvatar(comment.author.first_name)}'">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-2 mb-1">
-                                        <span class="font-semibold text-white text-sm">${comment.author.full_name}</span>
-                                        <span class="text-xs text-gray-400">${timeSince(comment.created_at)}</span>
-                                    </div>
-                                    <p class="text-white text-sm">${comment.content}</p>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('')}
-                    ${comments.length === 0 ? '<div class="text-center py-8 text-gray-400"><p>Be the first to comment!</p></div>' : ''}
-                </div>
-            `;
-        }
-
-        // Navigation functions
-        function navigateToProfile(userId) {
-            loadUserProfile(userId);
-            showScreen('profile-screen');
-        }
-
-        // Utility functions
-        function generateAvatar(name) {
-            return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=3b82f6&color=fff&size=80`;
-        }
-
-        function timeSince(dateString) {
-            const date = new Date(dateString);
-            const seconds = Math.floor((new Date() - date) / 1000);
-            
-            let interval = seconds / 31536000;
-            if (interval > 1) return Math.floor(interval) + "y";
-            
-            interval = seconds / 2592000;
-            if (interval > 1) return Math.floor(interval) + "mo";
-            
-            interval = seconds / 86400;
-            if (interval > 1) return Math.floor(interval) + "d";
-            
-            interval = seconds / 3600;
-            if (interval > 1) return Math.floor(interval) + "h";
-            
-            interval = seconds / 60;
-            if (interval > 1) return Math.floor(interval) + "m";
-            
-            return Math.floor(seconds) + "s";
-        }
-
-        function formatNumber(num) {
-            if (Math.abs(num) > 999) {
-                return Math.sign(num) * ((Math.abs(num) / 1000).toFixed(1)) + 'k';
-            }
-            return Math.sign(num) * Math.abs(num);
-        }
-
-        // Event listeners
-        document.addEventListener('DOMContentLoaded', () => {
-            // Navigation
-            document.querySelectorAll('.nav-icon').forEach(icon => {
-                icon.addEventListener('click', () => {
-                    const screenId = icon.dataset.screen;
-                    if (screenId === 'profile-screen') {
-                        navigateToProfile(state.currentUser.id);
-                    } else {
-                        showScreen(screenId);
+            // Smooth scroll for navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
             });
 
-            // Feed filters
-            document.querySelectorAll('.feed-filter-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const filter = btn.dataset.filter;
-                    state.feedFilter = filter;
-                    
-                    // Update button styles
-                    document.querySelectorAll('.feed-filter-btn').forEach(b => {
-                        b.classList.remove('active');
-                        b.classList.add('bg-gray-700/90', 'text-gray-300');
-                    });
-                    btn.classList.add('active');
-                    btn.classList.remove('bg-gray-700/90', 'text-gray-300');
-                    
-                    await loadFeed();
-                });
-            });
-
-            // Create post
-            document.getElementById('create-post-btn').addEventListener('click', () => {
-                document.getElementById('create-post-screen').classList.remove('hidden');
-                document.getElementById('post-textarea').focus();
-            });
-
-            document.getElementById('cancel-post-btn').addEventListener('click', () => {
-                document.getElementById('create-post-screen').classList.add('hidden');
-                document.getElementById('post-textarea').value = '';
-                document.getElementById('char-counter').textContent = '0/280';
-                document.getElementById('submit-post-btn').disabled = true;
-            });
-
-            // Post textarea
-            document.getElementById('post-textarea').addEventListener('input', (e) => {
-                const len = e.target.value.length;
-                document.getElementById('char-counter').textContent = `${len}/280`;
-                document.getElementById('submit-post-btn').disabled = len === 0 || len > 280;
-                
-                const counter = document.getElementById('char-counter');
-                counter.classList.toggle('text-red-500', len > 280);
-            });
-
-            // Submit post
-            document.getElementById('submit-post-btn').addEventListener('click', async () => {
-                const content = document.getElementById('post-textarea').value.trim();
-                if (content && content.length <= 280) {
-                    try {
-                        await createPost(content);
-                        document.getElementById('cancel-post-btn').click();
-                        showScreen('feed-screen');
-                    } catch (error) {
-                        showError('Failed to create post. Please try again.');
-                    }
-                }
-            });
-
-            // Comments
-            document.getElementById('close-comments-btn').addEventListener('click', () => {
-                document.getElementById('comments-screen').classList.add('hidden');
-            });
-
-            document.getElementById('comment-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('submit-comment-btn').click();
-                }
-            });
-
-            // Back button
-            document.getElementById('back-button').addEventListener('click', () => {
-                showScreen('feed-screen');
-            });
-
-            // Search functionality
-            const searchInput = document.querySelector('#discover-screen input[type="text"]');
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    const query = e.target.value.toLowerCase();
-                    // Implement search filtering here
-                });
-            }
+            // Auto-advance mini app demo every 5 seconds
+            let currentScreen = 0;
+            const screens = ['feed', 'discovery', 'profile'];
+            
+            setInterval(() => {
+                currentScreen = (currentScreen + 1) % screens.length;
+                switchScreen(screens[currentScreen]);
+            }, 5000);
         });
-
-        // Initialize app
-        initTelegramWebApp();
-        
-        // Set initial filter to active
-        document.querySelector('[data-filter="latest"]').classList.add('active');
-        
-        // Global functions for onclick handlers
-        window.toggleLike = toggleLike;
-        window.toggleFollow = toggleFollow;
-        window.showComments = showComments;
-        window.navigateToProfile = navigateToProfile;
     </script>
 </body>
 </html>
